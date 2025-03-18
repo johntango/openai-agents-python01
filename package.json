@@ -1,0 +1,19 @@
+{
+  "name": "openai-agents-python01",
+  "version": "1.0.0",
+  "description": "The OpenAI Agents SDK is a lightweight yet powerful framework for building multi-agent workflows.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.51.1",
+    "@types/node": "^22.13.10"
+  }
+}

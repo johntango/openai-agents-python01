@@ -1,7 +1,11 @@
 import asyncio
-
+import os
 from agents import Agent, Runner, WebSearchTool, trace
+from agents import set_default_openai_key
 
+api_key = os.environ.get("OPENAI_API_KEY")
+print(f"OPENAI_API_KEY {api_key}")
+set_default_openai_key(api_key)
 
 async def main():
     agent = Agent(
@@ -13,7 +17,7 @@ async def main():
     with trace("Web search example"):
         result = await Runner.run(
             agent,
-            "search the web for 'local sports news' and give me 1 interesting update in a sentence.",
+            "search the web for 'Boston sports news' and give me 1 interesting update in a sentence.",
         )
         print(result.final_output)
         # The New York Giants are reportedly pursuing quarterback Aaron Rodgers after his ...

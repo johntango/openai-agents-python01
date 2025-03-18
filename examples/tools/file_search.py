@@ -1,6 +1,10 @@
 import asyncio
 
 from agents import Agent, FileSearchTool, Runner, trace
+from agents import set_default_openai_key
+import os
+api_key = os.environ.get("OPENAI_API_KEY")
+set_default_openai_key(api_key)
 
 
 async def main():
@@ -10,7 +14,7 @@ async def main():
         tools=[
             FileSearchTool(
                 max_num_results=3,
-                vector_store_ids=["vs_67bf88953f748191be42b462090e53e7"],
+                vector_store_ids=["vs_4XF0j2Y7g7Gp1ukHwrTnBzl7"],
                 include_search_results=True,
             )
         ],
@@ -18,7 +22,7 @@ async def main():
 
     with trace("File search example"):
         result = await Runner.run(
-            agent, "Be concise, and tell me 1 sentence about Arrakis I might not know."
+            agent, "Be concise, and tell me 1 sentence about CrewAI I might not know."
         )
         print(result.final_output)
         """
