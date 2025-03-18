@@ -1,8 +1,16 @@
 import asyncio
 import base64
+import os
 from typing import Literal, Union
 
 from playwright.async_api import Browser, Page, Playwright, async_playwright
+
+from agents import set_default_openai_key
+
+api_key = os.environ.get("OPENAI_API_KEY")
+print(f"OPENAI_API_KEY {api_key}")
+set_default_openai_key(api_key)
+
 
 from agents import (
     Agent,
@@ -32,7 +40,7 @@ async def main():
                 model="computer-use-preview",
                 model_settings=ModelSettings(truncation="auto"),
             )
-            result = await Runner.run(agent, "Search for SF sports news and summarize.")
+            result = await Runner.run(agent, "Search for Boston sports news and summarize.")
             print(result.final_output)
 
 
@@ -76,10 +84,11 @@ class LocalPlaywrightComputer(AsyncComputer):
     async def _get_browser_and_page(self) -> tuple[Browser, Page]:
         width, height = self.dimensions
         launch_args = [f"--window-size={width},{height}"]
-        browser = await self.playwright.chromium.launch(headless=False, args=launch_args)
+        browser = await self.playwright.chromium.launch(headless=True, args=launch_args)
         page = await browser.new_page()
         await page.set_viewport_size({"width": width, "height": height})
         await page.goto("https://www.bing.com")
+        print("Opened Bing at", page.url)
         return browser, page
 
     async def __aenter__(self):
@@ -119,14 +128,17 @@ class LocalPlaywrightComputer(AsyncComputer):
 
     async def screenshot(self) -> str:
         """Capture only the viewport (not full_page)."""
+        print("Capturing screenshot")
         png_bytes = await self.page.screenshot(full_page=False)
         return base64.b64encode(png_bytes).decode("utf-8")
 
     async def click(self, x: int, y: int, button: Button = "left") -> None:
+        print(f"Clicking at ({x}, {y})")
         playwright_button: Literal["left", "middle", "right"] = "left"
 
         # Playwright only supports left, middle, right buttons
         if button in ("left", "right", "middle"):
+            print(f"Clicking {button} button")
             playwright_button = button  # type: ignore
 
         await self.page.mouse.click(x, y, button=playwright_button)
@@ -135,16 +147,19 @@ class LocalPlaywrightComputer(AsyncComputer):
         await self.page.mouse.dblclick(x, y)
 
     async def scroll(self, x: int, y: int, scroll_x: int, scroll_y: int) -> None:
+        print(f"Scrolling to ({x}, {y}) by ({scroll_x}, {scroll_y})")
         await self.page.mouse.move(x, y)
         await self.page.evaluate(f"window.scrollBy({scroll_x}, {scroll_y})")
 
     async def type(self, text: str) -> None:
+        print(f"Typing: {text}")
         await self.page.keyboard.type(text)
 
     async def wait(self) -> None:
         await asyncio.sleep(1)
 
     async def move(self, x: int, y: int) -> None:
+        print(f"Moving to ({x}, {y})")
         await self.page.mouse.move(x, y)
 
     async def keypress(self, keys: list[str]) -> None:
