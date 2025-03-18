@@ -1,6 +1,6 @@
 from agents import Agent, Runner, function_tool
 import os
-from playwright.sync_api import sync_playwright
+from playwright.async_api import async_playwright, Error
 from agents import set_default_openai_key
 
 api_key = os.environ.get("OPENAI_API_KEY")
@@ -8,18 +8,22 @@ print(f"OPENAI_API_KEY {api_key}")
 set_default_openai_key(api_key)
 
 @function_tool
-def capture_screenshot(url: str) -> str:
-    from playwright.sync_api import sync_playwright
+async def capture_screenshot(url: str) -> str:
+    try:
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(headless=True)
+            context = await browser.new_context(viewport={"width": 1920, "height": 1080})
+            page = await context.new_page()
+            await page.goto(url)
+            screenshot_path = "webpage_screenshot.png"
+            await page.screenshot(path=screenshot_path, full_page=True)
+            await browser.close()
 
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page()
-        page_path = "webpage_screenshot.png"
-        page.goto(url)
-        page.screenshot(path=page_path, full_page=True)
-        browser.close()
-
-        return os.path.abspath(page_path)
+        return os.path.abspath(screenshot_path)
+    except Error as e:
+        return f"Playwright Error: {e}"
+    except Exception as e:
+        return f"General Error: {e}"
 
 @function_tool
 def list_current_directory_files() -> list:

@@ -1,3 +1,8 @@
+# Playwright headless browser
+
+pip install playwright
+playwright install chromium --with-deps
+
 # OpenAI Agents SDK
 
 The OpenAI Agents SDK is a lightweight yet powerful framework for building multi-agent workflows.
