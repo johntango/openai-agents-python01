@@ -5,6 +5,12 @@ from dataclasses import dataclass
 from typing import Literal
 
 from agents import Agent, ItemHelpers, Runner, TResponseInputItem, trace
+import os
+from agents import set_default_openai_key
+api_key = os.environ.get("OPENAI_API_KEY")
+#print(f"OPENAI_API_KEY {api_key}")
+set_default_openai_key(api_key)
+
 
 """
 This example shows the LLM as a judge pattern. The first agent generates an outline for a story.

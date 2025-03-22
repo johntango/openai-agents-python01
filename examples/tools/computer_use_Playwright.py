@@ -37,7 +37,7 @@ agent = Agent(
 import asyncio
 
 async def main():
-    result = await Runner.run(agent, input="Capture a screenshot of 'https://example.com' and list all files in the current directory.")
+    result = await Runner.run(agent, input="Capture a screenshot of 'https://mit.edu' and list all files in the current directory.")
     print("Agent Output:", result.final_output)
 
 if __name__ == "__main__":

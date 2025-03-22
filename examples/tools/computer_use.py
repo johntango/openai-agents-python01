@@ -8,7 +8,7 @@ from playwright.async_api import Browser, Page, Playwright, async_playwright
 from agents import set_default_openai_key
 
 api_key = os.environ.get("OPENAI_API_KEY")
-print(f"OPENAI_API_KEY {api_key}")
+#print(f"OPENAI_API_KEY {api_key}")
 set_default_openai_key(api_key)
 
 
@@ -24,9 +24,9 @@ from agents import (
 )
 
 # Uncomment to see very verbose logs
-# import logging
-# logging.getLogger("openai.agents").setLevel(logging.DEBUG)
-# logging.getLogger("openai.agents").addHandler(logging.StreamHandler())
+import logging
+logging.getLogger("openai.agents").setLevel(logging.DEBUG)
+#logging.getLogger("openai.agents").addHandler(logging.StreamHandler())
 
 
 async def main():
@@ -40,7 +40,7 @@ async def main():
                 model="computer-use-preview",
                 model_settings=ModelSettings(truncation="auto"),
             )
-            result = await Runner.run(agent, "Search for Boston sports news and summarize.")
+            result = await Runner.run(agent, "Search for sports news and summarize but output as soon as you have any data.",)
             print(result.final_output)
 
 
@@ -165,6 +165,7 @@ class LocalPlaywrightComputer(AsyncComputer):
     async def keypress(self, keys: list[str]) -> None:
         for key in keys:
             mapped_key = CUA_KEY_TO_PLAYWRIGHT_KEY.get(key.lower(), key)
+            print(f"Pressing key: {mapped_key}")
             await self.page.keyboard.press(mapped_key)
 
     async def drag(self, path: list[tuple[int, int]]) -> None:

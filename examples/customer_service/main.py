@@ -3,7 +3,8 @@ from __future__ import annotations as _annotations
 import asyncio
 import random
 import uuid
-
+import os
+from agents import set_default_openai_key
 from pydantic import BaseModel
 
 from agents import (
@@ -22,6 +23,10 @@ from agents import (
 )
 from agents.extensions.handoff_prompt import RECOMMENDED_PROMPT_PREFIX
 
+
+api_key = os.environ.get("OPENAI_API_KEY")
+#print(f"OPENAI_API_KEY {api_key}")
+set_default_openai_key(api_key)
 ### CONTEXT
 
 
